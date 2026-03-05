@@ -1,0 +1,248 @@
+.risk-result {
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  .risk-display {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    border: 2px solid #e2e8f0;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    &.risk-low {
+      border-color: #10b981;
+      background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+      
+      .risk-icon {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+      }
+      
+      .risk-level {
+        color: #065f46;
+      }
+      
+      .risk-description {
+        color: #047857;
+      }
+    }
+    
+    &.risk-moderate {
+      border-color: #f59e0b;
+      background: linear-gradient(135deg, #fffbeb, #fef3c7);
+      
+      .risk-icon {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+        color: white;
+      }
+      
+      .risk-level {
+        color: #92400e;
+      }
+      
+      .risk-description {
+        color: #b45309;
+      }
+    }
+    
+    &.risk-high {
+      border-color: #ef4444;
+      background: linear-gradient(135deg, #fef2f2, #fecaca);
+      
+      .risk-icon {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+      }
+      
+      .risk-level {
+        color: #991b1b;
+      }
+      
+      .risk-description {
+        color: #dc2626;
+      }
+    }
+    
+    &.risk-unknown {
+      border-color: #6b7280;
+      background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+      
+      .risk-icon {
+        background: linear-gradient(135deg, #6b7280, #9ca3af);
+        color: white;
+      }
+      
+      .risk-level {
+        color: #374151;
+      }
+      
+      .risk-description {
+        color: #6b7280;
+      }
+    }
+  }
+
+  .risk-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .risk-content {
+    flex: 1;
+  }
+
+  .risk-level {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+  }
+
+  .risk-description {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .risk-recommendations {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+  }
+
+  .recommendations-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      border-radius: 2px;
+    }
+  }
+
+  .recommendations-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .recommendations-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  .recommendation-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #10b981, #34d399);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .recommendations-list span {
+    font-size: 0.925rem;
+    color: #374151;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 768px) {
+    .risk-display {
+      flex-direction: column;
+      text-align: center;
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+    
+    .risk-level {
+      font-size: 1.5rem;
+    }
+    
+    .recommendations-list li {
+      padding: 0.625rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .risk-display {
+      padding: 1rem;
+    }
+    
+    .risk-recommendations {
+      padding: 1rem;
+    }
+    
+    .recommendations-list li {
+      gap: 0.5rem;
+      padding: 0.5rem;
+    }
+  }
+}

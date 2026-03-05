@@ -1,0 +1,279 @@
+.cambra-form {
+  .form-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .form-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  }
+
+  .form-title {
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin: 0;
+    }
+  }
+
+  .form-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0.25rem 0 0 0;
+  }
+
+  .assessment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .form-section {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .disease-badge {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+  }
+
+  .risk-badge {
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  }
+
+  .protective-badge {
+    background: linear-gradient(135deg, #10b981, #34d399);
+  }
+
+  .section-info {
+    flex: 1;
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .section-description {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .form-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease;
+    
+    &:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    width: 100%;
+  }
+
+  .checkbox-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    margin-top: 2px;
+    
+    &::after {
+      content: '';
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 3px;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s ease;
+      background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2.5-2.5a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+      background-size: 12px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+
+  .checkbox-input:checked + .checkbox-custom {
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border-color: #3b82f6;
+    
+    &::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .checkbox-input:focus + .checkbox-custom {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  .checkbox-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .checkbox-text {
+    font-weight: 500;
+    color: #1f2937;
+    font-size: 0.925rem;
+    line-height: 1.4;
+  }
+
+  .checkbox-description {
+    font-size: 0.8rem;
+    color: #6b7280;
+    line-height: 1.3;
+  }
+
+  .checkbox-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+    
+    &.test-required {
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fcd34d;
+    }
+  }
+
+  // Section-specific styles
+  .disease-section {
+    .form-item:hover {
+      border-color: #fecaca;
+    }
+    
+    .checkbox-input:checked + .checkbox-custom {
+      background: linear-gradient(135deg, #ef4444, #f87171);
+      border-color: #ef4444;
+    }
+  }
+
+  .risk-section {
+    .form-item:hover {
+      border-color: #fed7aa;
+    }
+    
+    .checkbox-input:checked + .checkbox-custom {
+      background: linear-gradient(135deg, #f59e0b, #fbbf24);
+      border-color: #f59e0b;
+    }
+  }
+
+  .protective-section {
+    .form-item:hover {
+      border-color: #a7f3d0;
+    }
+    
+    .checkbox-input:checked + .checkbox-custom {
+      background: linear-gradient(135deg, #10b981, #34d399);
+      border-color: #10b981;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .form-header {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+      gap: 0.75rem;
+    }
+    
+    .section-header {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .form-section {
+      padding: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .checkbox-label {
+      gap: 0.5rem;
+    }
+    
+    .form-item {
+      padding: 0.75rem;
+    }
+  }
+}
