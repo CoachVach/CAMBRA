@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormArray,
@@ -8,140 +8,108 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CAMBRA_6PLUS_DEFINITION } from '../../cambra-6plus.definition';
+import { CAMBRA_0TO5_DEFINITION } from '../../cambra-0to5.definition';
 import { CambraItem } from '../../../../core/models/cambra-item.model';
+import { CambraFormDefinition } from '../../../../core/models/cambra-form.model';
 import { CambraCalculationService } from '../../../../core/services/cambra-calculation.service';
 import { CambraCalculationResult } from '../../../../core/models/cambra-result.model';
 import { CambraStateService } from '../../../../core/services/cambra-state.service';
-
+import { AgeGroup } from '../../../../core/models/age-group.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-cambra-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
-  template: `
-    <div class="cambra-form">
-      <div class="form-header">
-        <div class="form-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 12H7V10H17V12ZM17 16H7V14H17V16ZM17 8H7V6H17V8Z" fill="currentColor"/>
-          </svg>
-        </div>
-        <div class="form-title">
-          <h2>Cuestionario CAMBRA</h2>
-          <p class="form-subtitle">Evaluación para pacientes ≥ 6 años</p>
-        </div>
-      </div>
-
-      <form [formGroup]="form" class="assessment-form">
-        <!-- Section A: Disease Indicators -->
-        <div class="form-section disease-section">
-          <div class="section-header">
-            <div class="section-badge disease-badge">A</div>
-            <div class="section-info">
-              <h3 class="section-title">Indicadores de enfermedad</h3>
-              <p class="section-description">Signos visibles de actividad de caries</p>
-            </div>
-          </div>
-          <div class="form-grid">
-            <div class="form-item" *ngFor="let item of diseaseIndicators; let i = index">
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  class="checkbox-input"
-                  [formControl]="getFormControl(diseaseArray, i)"
-                />
-                <div class="checkbox-custom"></div>
-                <div class="checkbox-content">
-                  <span class="checkbox-text">{{ item.label }}</span>
-                </div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section B: Risk Factors -->
-        <div class="form-section risk-section">
-          <div class="section-header">
-            <div class="section-badge risk-badge">B</div>
-            <div class="section-info">
-              <h3 class="section-title">Factores de riesgo</h3>
-              <p class="section-description">Condiciones que aumentan el riesgo de caries</p>
-            </div>
-          </div>
-          <div class="form-grid">
-            <div class="form-item" *ngFor="let item of riskFactors; let i = index">
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  class="checkbox-input"
-                  [formControl]="getFormControl(riskArray, i)"
-                />
-                <div class="checkbox-custom"></div>
-                <div class="checkbox-content">
-                  <span class="checkbox-text">{{ item.label }}</span>
-                  <span class="checkbox-badge test-required" *ngIf="item.requiresTest">Requiere prueba</span>
-                </div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Section C: Protective Factors -->
-        <div class="form-section protective-section">
-          <div class="section-header">
-            <div class="section-badge protective-badge">C</div>
-            <div class="section-info">
-              <h3 class="section-title">Factores protectores</h3>
-              <p class="section-description">Elementos que reducen el riesgo de caries</p>
-            </div>
-          </div>
-          <div class="form-grid">
-            <div class="form-item" *ngFor="let item of protectiveFactors; let i = index">
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  class="checkbox-input"
-                  [formControl]="getFormControl(protectiveArray, i)"
-                />
-                <div class="checkbox-custom"></div>
-                <div class="checkbox-content">
-                  <span class="checkbox-text">{{ item.label }}</span>
-                </div>
-              </label>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  `,
-  styleUrls: ['./cambra-form.scss']
+  templateUrl: './cambra-form.html',
+  styleUrls: ['./cambra-form.scss'],
 })
-export class CambraForm implements OnInit {
+export class CambraForm implements OnInit, OnChanges, OnDestroy {
+  @Input() ageGroup: AgeGroup = 'AGE_6_PLUS';
+  @Input() isReadOnly: boolean = false;
+
   form!: FormGroup;
   result?: CambraCalculationResult;
+  definition!: CambraFormDefinition;
 
-  diseaseIndicators = CAMBRA_6PLUS_DEFINITION.diseaseIndicators;
-  riskFactors = CAMBRA_6PLUS_DEFINITION.riskFactors;
-  protectiveFactors = CAMBRA_6PLUS_DEFINITION.protectiveFactors;
+  diseaseIndicators: CambraItem[] = [];
+  riskFactors: CambraItem[] = [];
+  protectiveFactors: CambraItem[] = [];
+
+  private sub?: Subscription;
 
   constructor(
     private fb: FormBuilder,
     private calculationService: CambraCalculationService,
     private cambraState: CambraStateService,
-  ) {}
+  ) { }
 
   ngOnInit() {
+    this.loadDefinition();
+    this.buildForm();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['ageGroup'] && !changes['ageGroup'].firstChange) {
+      this.loadDefinition();
+      this.buildForm();
+    }
+
+    if (changes['isReadOnly'] && this.form) {
+      if (this.isReadOnly) {
+        this.form.disable();
+      } else {
+        this.form.enable();
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    this.sub?.unsubscribe();
+  }
+
+  private loadDefinition() {
+    this.definition =
+      this.ageGroup === 'AGE_0_5'
+        ? CAMBRA_0TO5_DEFINITION
+        : CAMBRA_6PLUS_DEFINITION;
+
+    this.diseaseIndicators = this.definition.diseaseIndicators;
+    this.riskFactors = this.definition.riskFactors;
+    this.protectiveFactors = this.definition.protectiveFactors;
+  }
+
+  private buildForm() {
+    this.sub?.unsubscribe();
+
     this.form = this.fb.group({
       diseaseIndicators: this.buildArray(this.diseaseIndicators),
       riskFactors: this.buildArray(this.riskFactors),
       protectiveFactors: this.buildArray(this.protectiveFactors),
     });
 
-    this.form.valueChanges.subscribe(() => {
-      const result = this.calculationService.calculate(this.form);
-      this.cambraState.setResult(result);
+    this.sub = this.form.valueChanges.subscribe(() => {
+      this.recalculate();
     });
 
+    if (this.isReadOnly) {
+      this.form.disable();
+    }
+
+    // Initial calculation
+    this.recalculate();
+  }
+
+  private recalculate() {
+    const result = this.calculationService.calculate(
+      this.form,
+      this.ageGroup,
+      this.diseaseIndicators,
+      this.riskFactors,
+      this.protectiveFactors,
+    );
+    this.result = result;
+    this.cambraState.setResult(result);
   }
 
   private buildArray(items: CambraItem[]): FormArray {
@@ -162,5 +130,60 @@ export class CambraForm implements OnInit {
 
   getFormControl(array: FormArray, index: number): FormControl {
     return array.at(index) as FormControl;
+  }
+
+  resetForm() {
+    this.form.reset();
+    Object.values(this.form.controls).forEach(control => {
+      if (control instanceof FormArray) {
+        control.controls.forEach(c => c.setValue(false));
+      }
+    });
+  }
+
+  get is0to5(): boolean {
+    return this.ageGroup === 'AGE_0_5';
+  }
+
+  get formTitle(): string {
+    return this.is0to5
+      ? 'Cuestionario CAMBRA modificado para edades de 0 a 5 años'
+      : 'Cuestionario CAMBRA modificado para edades a partir de 6 años';
+  }
+
+  get diseaseSectionTitle(): string {
+    return this.is0to5
+      ? 'Factores de riesgo de caries (Sectores 1 y 5)'
+      : '(A) Indicadores de la enfermedad';
+  }
+
+  get diseaseSectionDescription(): string {
+    return this.is0to5
+      ? 'Antecedentes de caries e indicadores clínicos'
+      : 'Signos visibles de actividad de caries (2 puntos cada uno)';
+  }
+
+  get riskSectionTitle(): string {
+    return this.is0to5
+      ? 'Factores de riesgo (Sector 2)'
+      : '(B) Factores de riesgo';
+  }
+
+  get riskSectionDescription(): string {
+    return this.is0to5
+      ? 'Hábitos y condiciones que aumentan el riesgo'
+      : 'Efectuar "Pruebas" si existe algún indicador de enfermedad (1 punto cada uno)';
+  }
+
+  get protectiveSectionTitle(): string {
+    return this.is0to5
+      ? 'Factores protectores (Sectores 3 y 4)'
+      : '(C) Factores protectores';
+  }
+
+  get protectiveSectionDescription(): string {
+    return this.is0to5
+      ? 'Elementos que reducen el riesgo de caries'
+      : 'Hábitos y tratamientos protectores (se resta 1 punto cada uno)';
   }
 }

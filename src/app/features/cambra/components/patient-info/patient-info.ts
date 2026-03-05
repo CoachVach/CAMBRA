@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CambraStateService } from '../../../../core/services/cambra-state.service';
@@ -8,45 +8,77 @@ import { CambraStateService } from '../../../../core/services/cambra-state.servi
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="patient-info">
+    <div class="patient-info" [class.readonly]="isReadOnly">
       <div class="section-header">
         <div class="section-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V19C3 20.1 3.9 21 5 21H11V19H5V3H13V9H21ZM17 12V10L20 13L17 16V14H13V12H17Z" fill="currentColor"/>
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
           </svg>
         </div>
         <h2 class="section-title">Información del Paciente</h2>
       </div>
-      
-      <div class="form-group">
-        <label class="form-label" for="age-input">
-          <span class="label-text">Edad del paciente</span>
-          <span class="label-description">Ingrese la edad en años completos</span>
-        </label>
-        <div class="input-wrapper">
+
+      <div class="form-row">
+        <div class="form-group name-group">
+          <label class="form-label" for="name-input">
+            <span class="label-text">Nombre del paciente</span>
+          </label>
           <input
-            id="age-input"
+            id="name-input"
             class="form-input"
-            type="number"
-            min="0"
-            max="120"
-            placeholder="Ej: 25"
-            [(ngModel)]="age"
-            (change)="onAgeChange()"
+            type="text"
+            placeholder="Nombre completo"
+            [(ngModel)]="patientName"
+            (input)="onNameChange()"
+            [disabled]="isReadOnly"
           />
-          <div class="input-suffix">años</div>
         </div>
-        <div class="form-hint" *ngIf="age && age < 6">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="currentColor"/>
+
+        <div class="form-group age-group">
+          <label class="form-label" for="age-input">
+            <span class="label-text">Edad</span>
+          </label>
+          <div class="input-wrapper">
+            <input
+              id="age-input"
+              class="form-input age-input"
+              type="number"
+              min="0"
+              max="120"
+              placeholder="Ej: 4"
+              [(ngModel)]="age"
+              (change)="onAgeChange()"
+              [disabled]="isReadOnly"
+            />
+            <div class="input-suffix">años</div>
+          </div>
+        </div>
+
+        <div class="form-group date-group">
+          <label class="form-label" for="date-input">
+            <span class="label-text">Fecha</span>
+          </label>
+          <input
+            id="date-input"
+            class="form-input"
+            type="date"
+            [(ngModel)]="patientDate"
+            (change)="onDateChange()"
+            [disabled]="isReadOnly"
+          />
+        </div>
+      </div>
+
+      <div class="age-indicator" *ngIf="age !== undefined && age !== null">
+        <div class="age-badge" [class.age-young]="age < 6" [class.age-older]="age >= 6">
+          <svg *ngIf="age < 6" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM10 22V13H8V7H16V13H14V22H10Z" fill="currentColor"/>
           </svg>
-          Nota: Para pacientes menores de 6 años, utilice el formulario CAMBRA 0-5 años.
-        </div>
-        <div class="form-hint success" *ngIf="age && age >= 6">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg *ngIf="age >= 6" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
           </svg>
-          Edad válida para el formulario CAMBRA ≥ 6 años.
+          <span *ngIf="age < 6">Formulario CAMBRA 0–5 años</span>
+          <span *ngIf="age >= 6">Formulario CAMBRA ≥ 6 años</span>
         </div>
       </div>
     </div>
@@ -54,13 +86,27 @@ import { CambraStateService } from '../../../../core/services/cambra-state.servi
   styleUrls: ['./patient-info.scss']
 })
 export class PatientInfo {
+  @Input() isReadOnly: boolean = false;
   age?: number;
+  patientName = '';
+  patientDate = '';
 
-  constructor(private cambraState: CambraStateService) {}
+  constructor(private cambraState: CambraStateService) {
+    const today = new Date();
+    this.patientDate = today.toISOString().split('T')[0];
+  }
 
   onAgeChange() {
-    if (this.age !== undefined) {
+    if (this.age !== undefined && this.age !== null) {
       this.cambraState.setAge(this.age);
     }
+  }
+
+  onNameChange() {
+    this.cambraState.setPatientName(this.patientName);
+  }
+
+  onDateChange() {
+    this.cambraState.setPatientDate(this.patientDate);
   }
 }
