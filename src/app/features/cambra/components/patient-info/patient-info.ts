@@ -47,7 +47,7 @@ import { CambraStateService } from '../../../../core/services/cambra-state.servi
               max="120"
               placeholder="Ej: 4"
               [(ngModel)]="age"
-              (change)="onAgeChange()"
+              (input)="onAgeChange()"
               [disabled]="isReadOnly"
             />
             <div class="input-suffix">años</div>
@@ -97,9 +97,7 @@ export class PatientInfo {
   }
 
   onAgeChange() {
-    if (this.age !== undefined && this.age !== null) {
-      this.cambraState.setAge(this.age);
-    }
+    this.cambraState.setAge(this.age ?? null);
   }
 
   onNameChange() {

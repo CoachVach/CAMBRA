@@ -9,8 +9,12 @@ export class CambraStateService {
   private _patientName = '';
   private _patientDate = '';
 
-  setAge(age: number) {
-    this._ageGroup = age < 6 ? 'AGE_0_5' : 'AGE_6_PLUS';
+  setAge(age: number | null) {
+    if (age === null) {
+      this._ageGroup = null;
+    } else {
+      this._ageGroup = age < 6 ? 'AGE_0_5' : 'AGE_6_PLUS';
+    }
     this._result = null;
   }
 

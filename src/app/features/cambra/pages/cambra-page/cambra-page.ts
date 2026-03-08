@@ -22,8 +22,8 @@ type Step = 'patient' | 'questionnaire' | 'results';
             </svg>
           </div>
           <div class="header-text">
-            <h1 class="app-title">CAMBRA</h1>
-            <p class="app-subtitle">Caries Management by Risk Assessment</p>
+            <h1 class="app-title">Caries Risk ES</h1>
+            <p class="app-subtitle">Evaluación de Riesgo de Caries</p>
           </div>
           <div class="header-actions">
             <a href="/docs/SEOP-Cuestionario-Cambra-1-y-2.pdf" download="Cuestionario-CAMBRA-SEOP.pdf" class="header-doc-btn">
@@ -171,7 +171,7 @@ type Step = 'patient' | 'questionnaire' | 'results';
       <footer class="app-footer">
         <p>Realizado por <strong>Marjorie Armida Herrera</strong></p>
         <p>Universidad Evangélica de El Salvador</p>
-        <p class="app-footer-brand">CAMBRA · Cuestionario de Evaluación de Riesgo de Caries</p>
+        <p class="app-footer-brand">Caries Risk ES · Evaluación de Riesgo de Caries</p>
       </footer>
     </div>
   `,
