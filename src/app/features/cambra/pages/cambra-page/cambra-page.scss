@@ -452,6 +452,19 @@ $purple-extra-light: #f5f0f9;
   padding: 3rem 1.5rem;
   background: #f8fafc;
   color: #64748b;
+
+  .footer-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    margin-bottom: 0.75rem;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
   font-size: 0.9rem;
   line-height: 1.6;
   border-top: 1px solid #e2e8f0;

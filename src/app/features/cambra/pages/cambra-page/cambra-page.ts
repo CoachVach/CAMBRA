@@ -169,7 +169,7 @@ type Step = 'patient' | 'questionnaire' | 'results';
 
       <!-- Footer -->
       <footer class="app-footer">
-        <p>Realizado por <strong>Marjorie Armida Herrera</strong></p>
+        <img src="docs/logo.png" alt="Logo" class="footer-logo">
         <p>Universidad Evangélica de El Salvador</p>
         <p class="app-footer-brand">Caries Risk ES · Evaluación de Riesgo de Caries</p>
       </footer>
