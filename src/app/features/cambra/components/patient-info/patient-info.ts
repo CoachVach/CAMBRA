@@ -87,17 +87,25 @@ import { CambraStateService } from '../../../../core/services/cambra-state.servi
 })
 export class PatientInfo {
   @Input() isReadOnly: boolean = false;
-  age?: number;
   patientName = '';
   patientDate = '';
 
   constructor(private cambraState: CambraStateService) {
     const today = new Date();
     this.patientDate = today.toISOString().split('T')[0];
+    this.cambraState.setPatientDate(this.patientDate);
+  }
+
+  get age(): number | undefined {
+    return this.cambraState.age ?? undefined;
+  }
+
+  set age(val: number | undefined) {
+    this.cambraState.setAge(val ?? null);
   }
 
   onAgeChange() {
-    this.cambraState.setAge(this.age ?? null);
+    // Already handled by setter
   }
 
   onNameChange() {

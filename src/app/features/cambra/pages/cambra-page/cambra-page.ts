@@ -5,12 +5,14 @@ import { CambraForm } from '../../components/cambra-form/cambra-form';
 import { CambraStateService } from '../../../../core/services/cambra-state.service';
 import { ScoreSummary } from '../../components/score-summary/score-summary';
 import { RiskResult } from '../../components/risk-result/risk-result';
+import { FormsModule } from '@angular/forms';
+import { PdfExportService } from '../../../../core/services/pdf-export.service';
 
 type Step = 'patient' | 'questionnaire' | 'results';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, PatientInfo, CambraForm, ScoreSummary, RiskResult],
+  imports: [CommonModule, PatientInfo, CambraForm, ScoreSummary, RiskResult, FormsModule],
   template: `
     <div class="cambra-container">
       <!-- Header Section -->
@@ -148,6 +150,67 @@ type Step = 'patient' | 'questionnaire' | 'results';
                 <app-risk-result [ageGroup]="ageGroup!"></app-risk-result>
               </div>
             </div>
+            <!-- (Export button is now inside app-risk-result) -->
+          </div>
+        </div>
+
+        <!-- Hidden PDF Template -->
+        <div id="pdf-report-template" class="pdf-template" style="display: none;">
+          <div class="pdf-header">
+            <div class="pdf-logo-container">
+              <img src="docs/logo.png" alt="Logo">
+            </div>
+            <div class="pdf-header-text">
+              <h1>Reporte de Riesgo de Caries</h1>
+              <p>Clínica Odontológica · Caries Risk ES</p>
+            </div>
+          </div>
+
+          <div class="pdf-section">
+            <h2 class="pdf-section-title">Información del Paciente</h2>
+            <div class="pdf-info-grid">
+              <div class="pdf-info-item">
+                <span class="pdf-info-label">Nombre:</span>
+                <span class="pdf-info-value">{{ patientName || 'No indicado' }}</span>
+              </div>
+              <div class="pdf-info-item">
+                <span class="pdf-info-label">Edad:</span>
+                <span class="pdf-info-value">{{ patientAge ? patientAge + ' años' : 'No indicada' }}</span>
+              </div>
+              <div class="pdf-info-item">
+                <span class="pdf-info-label">Fecha de Evaluación:</span>
+                <span class="pdf-info-value">{{ patientDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="pdf-info-item" *ngIf="nextAppointmentDate">
+                <span class="pdf-info-label">Próximo Control:</span>
+                <span class="pdf-info-value">{{ nextAppointmentDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pdf-section">
+            <h2 class="pdf-section-title">Resultado de Evaluación (CAMBRA)</h2>
+            <div class="pdf-result-card">
+              <div class="pdf-risk-badge" [class]="'risk-' + riskLevel">
+                {{ riskLevelLabel }}
+              </div>
+              <div class="pdf-score-details">
+                <p><strong>Puntaje Total:</strong> {{ currentScore }} puntos</p>
+                <p class="pdf-risk-desc">Esta evaluación se basa en el balance entre indicadores de enfermedad, factores de riesgo y factores protectores.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pdf-section" *ngIf="objectives">
+            <h2 class="pdf-section-title">Objetivos de Autocuidado</h2>
+            <div class="pdf-objectives">
+              <p>{{ objectives }}</p>
+            </div>
+          </div>
+
+          <div class="pdf-footer">
+            <p>Universidad Evangélica de El Salvador · Proyecto de Evaluación de Riesgo</p>
+            <p class="pdf-footer-brand">Caries Risk ES</p>
           </div>
         </div>
 
@@ -180,7 +243,34 @@ type Step = 'patient' | 'questionnaire' | 'results';
 export class CambraPage {
   currentStep: Step = 'patient';
 
-  constructor(public cambraState: CambraStateService) { }
+  constructor(
+    public cambraState: CambraStateService,
+    private pdfExport: PdfExportService
+  ) { }
+
+  get patientName() { return this.cambraState.patientName; }
+  get patientAge() { return this.cambraState.age; }
+  get patientDate() { return this.cambraState.patientDate; }
+  get currentScore() { return this.cambraState.result?.totalScore || 0; }
+  get riskLevel() { return this.cambraState.result?.riskLevel.toLowerCase() || 'low'; }
+
+  get riskLevelLabel() {
+    switch (this.riskLevel) {
+      case 'low': return 'RIESGO BAJO';
+      case 'moderate': return 'RIESGO MEDIO';
+      case 'high': return 'RIESGO ALTO';
+      case 'extreme': return 'RIESGO EXTREMO';
+      default: return 'NO EVALUADO';
+    }
+  }
+
+  get nextAppointmentDate(): string {
+    return this.cambraState.nextAppointmentDate;
+  }
+
+  get objectives(): string {
+    return this.cambraState.objectives;
+  }
 
   get ageGroup() {
     return this.cambraState.ageGroup;

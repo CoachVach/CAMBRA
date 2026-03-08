@@ -104,23 +104,44 @@ $purple-extra-light: #f5f0f9;
   }
 
   .header-reset-btn {
-    background: white;
-    border: none;
-    color: $purple-dark;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 
     &:hover {
-      background: #f8f5ff;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+      background: white;
+      color: $purple-dark;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      border-color: white;
+
+      svg {
+        transform: rotate(-180deg);
+      }
+    }
+
+    &:active {
+      transform: translateY(0) scale(0.98);
     }
 
     svg {
-      transition: transform 0.4s ease;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    &:hover svg {
-      transform: rotate(-180deg);
+    span {
+      letter-spacing: 0.02em;
     }
   }
 }
@@ -343,16 +364,29 @@ $purple-extra-light: #f5f0f9;
 }
 
 .btn-edit {
-  padding: 0.625rem 1.25rem;
-  font-size: 0.875rem;
-  background: rgba($purple, 0.05);
-  border: 1px solid rgba($purple, 0.15);
-  color: $purple;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  background: white;
+  border: 2px solid #e2e8f0;
+  color: #64748b;
+  border-radius: 14px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 
   &:hover {
-    background: rgba($purple, 0.1);
-    border-color: rgba($purple, 0.3);
+    background: #f8fafc;
+    border-color: $purple-light;
+    color: $purple-dark;
     transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba($purple, 0.05);
+  }
+
+  svg {
+    transition: transform 0.3s ease;
+  }
+
+  &:hover svg {
+    transform: rotate(-15deg) scale(1.1);
   }
 }
 
@@ -443,6 +477,151 @@ $purple-extra-light: #f5f0f9;
 
   &.risk-card {
     border-top: 5px solid #ef4444;
+  }
+}
+
+// (Report Options card removed, button now in results sector)
+
+// ─── PDF Template (Hidden) ────────────────────
+.pdf-template {
+  width: 210mm; // Fixed width for capture
+  padding: 20mm;
+  background: white;
+  color: #1e293b;
+  font-family: 'Inter', sans-serif;
+
+  .pdf-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+
+    .pdf-logo-container img {
+      width: 60px;
+      height: 60px;
+    }
+
+    .pdf-header-text {
+      h1 {
+        font-size: 24pt;
+        margin: 0;
+        color: $purple-dark;
+      }
+
+      p {
+        font-size: 11pt;
+        margin: 5px 0 0;
+        color: #64748b;
+      }
+    }
+  }
+
+  .pdf-section {
+    margin-bottom: 2rem;
+
+    .pdf-section-title {
+      font-size: 14pt;
+      font-weight: 700;
+      color: $purple;
+      border-left: 4px solid $purple;
+      padding-left: 10px;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .pdf-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+
+    .pdf-info-item {
+      .pdf-info-label {
+        font-weight: 700;
+        color: #64748b;
+        margin-right: 8px;
+      }
+
+      .pdf-info-value {
+        color: #1e293b;
+      }
+    }
+  }
+
+  .pdf-result-card {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+
+    .pdf-risk-badge {
+      padding: 10px 20px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 12pt;
+      color: white;
+
+      &.risk-low {
+        background: #10b981;
+      }
+
+      &.risk-moderate {
+        background: #f59e0b;
+      }
+
+      &.risk-high {
+        background: #ef4444;
+      }
+
+      &.risk-extreme {
+        background: #8b1e1e;
+      }
+    }
+
+    .pdf-score-details p {
+      margin: 5px 0;
+    }
+
+    .pdf-risk-desc {
+      font-size: 10pt;
+      color: #64748b;
+      font-style: italic;
+    }
+  }
+
+  .pdf-objectives {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+
+    p {
+      margin: 0;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+  }
+
+  .pdf-footer {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #f1f5f9;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 9pt;
+
+    .pdf-footer-brand {
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 5px;
+    }
   }
 }
 

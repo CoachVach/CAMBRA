@@ -9,7 +9,12 @@ export class CambraStateService {
   private _patientName = '';
   private _patientDate = '';
 
+  private _nextAppointmentDate = '';
+  private _age: number | null = null;
+  private _objectives = '';
+
   setAge(age: number | null) {
+    this._age = age;
     if (age === null) {
       this._ageGroup = null;
     } else {
@@ -30,8 +35,20 @@ export class CambraStateService {
     this._patientDate = date;
   }
 
+  setNextAppointmentDate(date: string) {
+    this._nextAppointmentDate = date;
+  }
+
+  setObjectives(text: string) {
+    this._objectives = text;
+  }
+
   get ageGroup(): AgeGroup | null {
     return this._ageGroup;
+  }
+
+  get age(): number | null {
+    return this._age;
   }
 
   get result(): CambraCalculationResult | null {
@@ -46,10 +63,21 @@ export class CambraStateService {
     return this._patientDate;
   }
 
+  get nextAppointmentDate(): string {
+    return this._nextAppointmentDate;
+  }
+
+  get objectives(): string {
+    return this._objectives;
+  }
+
   reset() {
     this._ageGroup = null;
+    this._age = null;
     this._result = null;
     this._patientName = '';
     this._patientDate = '';
+    this._nextAppointmentDate = '';
+    this._objectives = '';
   }
 }

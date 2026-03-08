@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CambraStateService } from '../../../../core/services/cambra-state.service';
 import { AgeGroup } from '../../../../core/models/age-group.model';
+import { PdfExportService } from '../../../../core/services/pdf-export.service';
 
 @Component({
   selector: 'app-risk-result',
@@ -114,6 +115,16 @@ import { AgeGroup } from '../../../../core/models/age-group.model';
             </li>
           </ul>
         </div>
+
+        <!-- Export Report Section -->
+        <div class="export-report-section">
+          <button class="btn-export-pdf" (click)="onExportPdf()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="currentColor"/>
+            </svg>
+            Descargar Reporte PDF
+          </button>
+        </div>
       </div>
     </ng-container>
   `,
@@ -126,10 +137,27 @@ export class RiskResult {
   strepLevel = '';
   lactoLevel = '';
   recommendationsGiven: boolean | null = null;
-  nextControlDate = '';
-  objectives = '';
 
-  constructor(private cambraState: CambraStateService) { }
+  constructor(
+    private cambraState: CambraStateService,
+    private pdfExport: PdfExportService
+  ) { }
+
+  get nextControlDate(): string {
+    return this.cambraState.nextAppointmentDate;
+  }
+
+  set nextControlDate(val: string) {
+    this.cambraState.setNextAppointmentDate(val);
+  }
+
+  get objectives(): string {
+    return this.cambraState.objectives;
+  }
+
+  set objectives(val: string) {
+    this.cambraState.setObjectives(val);
+  }
 
   get result() {
     return this.cambraState.result;
@@ -190,5 +218,10 @@ export class RiskResult {
         'Utilizar la Guía de Práctica Clínica para el tratamiento no invasivo',
         'Reevaluar a los 6 meses',
       ];
+  }
+
+  async onExportPdf() {
+    const patientName = this.cambraState.patientName.replace(/\s+/g, '_') || 'Paciente';
+    await this.pdfExport.exportToPdf('pdf-report-template', `Reporte_Cambra_${patientName}`);
   }
 }
