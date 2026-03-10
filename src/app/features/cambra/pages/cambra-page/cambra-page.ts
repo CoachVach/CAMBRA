@@ -7,6 +7,7 @@ import { ScoreSummary } from '../../components/score-summary/score-summary';
 import { RiskResult } from '../../components/risk-result/risk-result';
 import { FormsModule } from '@angular/forms';
 import { PdfExportService } from '../../../../core/services/pdf-export.service';
+import { Router } from '@angular/router';
 
 type Step = 'patient' | 'questionnaire' | 'results';
 
@@ -18,14 +19,17 @@ type Step = 'patient' | 'questionnaire' | 'results';
       <!-- Header Section -->
       <header class="app-header">
         <div class="header-content">
-          <div class="header-icon">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM10 22V13H8V7H16V13H14V22H10Z" fill="currentColor" opacity="0.9"/>
-            </svg>
+          <div class="header-back">
+            <button class="header-back-btn" (click)="goHome()">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
+              </svg>
+            </button>
           </div>
           <div class="header-text">
             <h1 class="app-title">Caries Risk ES</h1>
-            <p class="app-subtitle">Evaluación de Riesgo de Caries</p>
+            <p class="app-subtitle" *ngIf="!isGroupMode">Evaluación Individual</p>
+            <p class="app-subtitle" *ngIf="isGroupMode">Evaluación para Grupo</p>
           </div>
           <div class="header-actions">
             <a href="/docs/SEOP-Cuestionario-Cambra-1-y-2.pdf" download="Cuestionario-CAMBRA-SEOP.pdf" class="header-doc-btn">
@@ -38,7 +42,7 @@ type Step = 'patient' | 'questionnaire' | 'results';
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4.01 7.58 4.01 12S7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12S8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="currentColor"/>
               </svg>
-              Nueva evaluación
+              <span>Reiniciar</span>
             </button>
           </div>
         </div>
@@ -113,7 +117,7 @@ type Step = 'patient' | 'questionnaire' | 'results';
 
             <!-- Finalizar button for Step 2 -->
             <div class="step-actions" *ngIf="currentStep === 'questionnaire'">
-              <button class="btn-back" (click)="goBackToPatient()">
+              <button class="btn-back-step" (click)="goBackToPatient()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
                 </svg>
@@ -150,7 +154,19 @@ type Step = 'patient' | 'questionnaire' | 'results';
                 <app-risk-result [ageGroup]="ageGroup!"></app-risk-result>
               </div>
             </div>
-            <!-- (Export button is now inside app-risk-result) -->
+            
+            <!-- Final Footer Actions -->
+            <div class="finish-evaluation-bar">
+               <button class="btn-primary-finish" (click)="finishAndSave()" *ngIf="isGroupMode">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V7l-4-4zm-5 16c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm3-10H5V5h10v4z" fill="currentColor"/>
+                  </svg>
+                  Guardar Evaluación en Grupo
+               </button>
+               <button class="btn-secondary-home" (click)="goHome()">
+                  Finalizar y Volver al Inicio
+               </button>
+            </div>
           </div>
         </div>
 
@@ -245,7 +261,8 @@ export class CambraPage {
 
   constructor(
     public cambraState: CambraStateService,
-    private pdfExport: PdfExportService
+    private pdfExport: PdfExportService,
+    private router: Router
   ) { }
 
   get patientName() { return this.cambraState.patientName; }
@@ -276,6 +293,10 @@ export class CambraPage {
     return this.cambraState.ageGroup;
   }
 
+  get isGroupMode(): boolean {
+    return !this.cambraState.isIndividualMode && !!this.cambraState.currentGroupId;
+  }
+
   get canProceedToQuestionnaire(): boolean {
     return this.ageGroup !== null;
   }
@@ -302,4 +323,18 @@ export class CambraPage {
     this.cambraState.reset();
     this.currentStep = 'patient';
   }
+
+  goHome() {
+    if (this.isGroupMode) {
+      this.router.navigate(['/cambra/groups', this.cambraState.currentGroupId]);
+    } else {
+      this.router.navigate(['/cambra/dashboard']);
+    }
+  }
+
+  finishAndSave() {
+    this.cambraState.saveCurrentEvaluationToGroup();
+    this.goHome();
+  }
 }
+

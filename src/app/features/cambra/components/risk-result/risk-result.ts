@@ -134,14 +134,20 @@ export class RiskResult {
   @Input() ageGroup: AgeGroup = 'AGE_6_PLUS';
 
   cultureLevels = ['Alto', 'Medio', 'Bajo'];
-  strepLevel = '';
-  lactoLevel = '';
-  recommendationsGiven: boolean | null = null;
 
   constructor(
     private cambraState: CambraStateService,
     private pdfExport: PdfExportService
   ) { }
+
+  get strepLevel(): string { return this.cambraState.strepLevel; }
+  set strepLevel(val: string) { this.cambraState.setStrepLevel(val); }
+
+  get lactoLevel(): string { return this.cambraState.lactoLevel; }
+  set lactoLevel(val: string) { this.cambraState.setLactoLevel(val); }
+
+  get recommendationsGiven(): boolean | null { return this.cambraState.recommendationsGiven; }
+  set recommendationsGiven(val: boolean | null) { this.cambraState.setRecommendationsGiven(val); }
 
   get nextControlDate(): string {
     return this.cambraState.nextAppointmentDate;

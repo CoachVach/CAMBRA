@@ -87,14 +87,19 @@ import { CambraStateService } from '../../../../core/services/cambra-state.servi
 })
 export class PatientInfo {
   @Input() isReadOnly: boolean = false;
-  patientName = '';
-  patientDate = '';
 
   constructor(private cambraState: CambraStateService) {
-    const today = new Date();
-    this.patientDate = today.toISOString().split('T')[0];
-    this.cambraState.setPatientDate(this.patientDate);
+    if (!this.cambraState.patientDate) {
+      const today = new Date();
+      this.cambraState.setPatientDate(today.toISOString().split('T')[0]);
+    }
   }
+
+  get patientName(): string { return this.cambraState.patientName; }
+  set patientName(val: string) { this.cambraState.setPatientName(val); }
+
+  get patientDate(): string { return this.cambraState.patientDate; }
+  set patientDate(val: string) { this.cambraState.setPatientDate(val); }
 
   get age(): number | undefined {
     return this.cambraState.age ?? undefined;
@@ -104,15 +109,7 @@ export class PatientInfo {
     this.cambraState.setAge(val ?? null);
   }
 
-  onAgeChange() {
-    // Already handled by setter
-  }
-
-  onNameChange() {
-    this.cambraState.setPatientName(this.patientName);
-  }
-
-  onDateChange() {
-    this.cambraState.setPatientDate(this.patientDate);
-  }
+  onAgeChange() { /* logic handled by setter */ }
+  onNameChange() { /* logic handled by setter */ }
+  onDateChange() { /* logic handled by setter */ }
 }
