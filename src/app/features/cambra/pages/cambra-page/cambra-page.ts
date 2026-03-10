@@ -269,14 +269,12 @@ export class CambraPage {
   get patientAge() { return this.cambraState.age; }
   get patientDate() { return this.cambraState.patientDate; }
   get currentScore() { return this.cambraState.result?.totalScore || 0; }
-  get riskLevel() { return this.cambraState.result?.riskLevel.toLowerCase() || 'low'; }
+  get riskLevel() { return this.cambraState.result?.riskLevel.toLowerCase() || ''; }
 
   get riskLevelLabel() {
     switch (this.riskLevel) {
-      case 'low': return 'RIESGO BAJO';
-      case 'moderate': return 'RIESGO MEDIO';
-      case 'high': return 'RIESGO ALTO';
-      case 'extreme': return 'RIESGO EXTREMO';
+      case 'bajo': return 'BAJO RIESGO';
+      case 'alto': return 'ALTO RIESGO';
       default: return 'NO EVALUADO';
     }
   }

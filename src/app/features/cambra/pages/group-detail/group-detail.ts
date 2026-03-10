@@ -257,8 +257,7 @@ export class GroupDetail implements OnInit {
     const avgScore = scores.reduce((a, b) => a + b, 0) / scores.length;
 
     // Basic threshold logic (adjust based on CAMBRA rules)
-    if (avgScore >= 10) return 'ALTO';
-    if (avgScore >= 5) return 'MODERADO';
+    if (avgScore >= 5) return 'ALTO';
     return 'BAJO';
   }
 
