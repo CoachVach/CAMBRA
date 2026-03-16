@@ -20,16 +20,16 @@ import { CambraStateService } from '../../../../core/services/cambra-state.servi
 
       <div class="form-row">
         <div class="form-group name-group">
-          <label class="form-label" for="name-input">
-            <span class="label-text">Nombre del paciente</span>
+          <label class="form-label" for="code-input">
+            <span class="label-text">Código del paciente</span>
           </label>
           <input
-            id="name-input"
+            id="code-input"
             class="form-input"
             type="text"
-            placeholder="Nombre completo"
-            [(ngModel)]="patientName"
-            (input)="onNameChange()"
+            placeholder="Código"
+            [(ngModel)]="patientCode"
+            (input)="onCodeChange()"
             [disabled]="isReadOnly"
           />
         </div>
@@ -95,8 +95,8 @@ export class PatientInfo {
     }
   }
 
-  get patientName(): string { return this.cambraState.patientName; }
-  set patientName(val: string) { this.cambraState.setPatientName(val); }
+  get patientCode(): string { return this.cambraState.patientCode; }
+  set patientCode(val: string) { this.cambraState.setPatientCode(val); }
 
   get patientDate(): string { return this.cambraState.patientDate; }
   set patientDate(val: string) { this.cambraState.setPatientDate(val); }
@@ -110,6 +110,6 @@ export class PatientInfo {
   }
 
   onAgeChange() { /* logic handled by setter */ }
-  onNameChange() { /* logic handled by setter */ }
+  onCodeChange() { /* logic handled by setter */ }
   onDateChange() { /* logic handled by setter */ }
 }

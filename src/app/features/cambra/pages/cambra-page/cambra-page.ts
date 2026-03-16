@@ -186,8 +186,8 @@ type Step = 'patient' | 'questionnaire' | 'results';
             <h2 class="pdf-section-title">Información del Paciente</h2>
             <div class="pdf-info-grid">
               <div class="pdf-info-item">
-                <span class="pdf-info-label">Nombre:</span>
-                <span class="pdf-info-value">{{ patientName || 'No indicado' }}</span>
+                <span class="pdf-info-label">Código:</span>
+                <span class="pdf-info-value">{{ patientCode || 'No indicado' }}</span>
               </div>
               <div class="pdf-info-item">
                 <span class="pdf-info-label">Edad:</span>
@@ -265,7 +265,7 @@ export class CambraPage {
     private router: Router
   ) { }
 
-  get patientName() { return this.cambraState.patientName; }
+  get patientCode() { return this.cambraState.patientCode; }
   get patientAge() { return this.cambraState.age; }
   get patientDate() { return this.cambraState.patientDate; }
   get currentScore() { return this.cambraState.result?.totalScore || 0; }

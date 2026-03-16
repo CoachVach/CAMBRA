@@ -92,7 +92,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
           <div class="patient-card" *ngFor="let p of group.patients">
             <div class="p-main">
               <div class="p-info">
-                <span class="p-name">{{ p.name }}</span>
+                <span class="p-name">{{ p.code }}</span>
                 <span class="p-meta">
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
@@ -181,7 +181,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
           <table class="pdf-table">
             <thead>
               <tr>
-                <th>Nombre</th>
+                <th>Código</th>
                 <th>Edad</th>
                 <th>Revisión</th>
                 <th>Riesgo</th>
@@ -190,7 +190,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
             </thead>
             <tbody>
               <tr *ngFor="let p of group.patients">
-                <td>{{ p.name }}</td>
+                <td>{{ p.code }}</td>
                 <td>{{ p.age }} años</td>
                 <td>{{ p.date | date:'dd/MM/yyyy' }}</td>
                 <td>
@@ -294,14 +294,14 @@ export class GroupDetail implements OnInit {
     const BOM = '\uFEFF';
 
     // Config headers
-    const headers = ['Nombre,Edad,Fecha,Riesgo,Puntaje\n'];
+    const headers = ['Código,Edad,Fecha,Riesgo,Puntaje\n'];
 
     // Rows
     const rows = this.group.patients.map(p => {
       const date = new Intl.DateTimeFormat('es-SV').format(new Date(p.date));
-      // Escape commas inside name just in case
-      const name = `"${p.name.replace(/"/g, '""')}"`;
-      return `${name},${p.age},${date},${p.result.riskLevel},${p.result.totalScore}`;
+      // Escape commas inside code just in case
+      const code = `"${p.code.replace(/"/g, '""')}"`;
+      return `${code},${p.age},${date},${p.result.riskLevel},${p.result.totalScore}`;
     });
 
     // Add extra info below

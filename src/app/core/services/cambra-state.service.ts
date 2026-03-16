@@ -10,7 +10,7 @@ export class CambraStateService {
   // --- Current Evaluation Data ---
   private _ageGroup: AgeGroup | null = null;
   private _result: CambraCalculationResult | null = null;
-  private _patientName = '';
+  private _patientCode = '';
   private _patientDate = '';
   private _nextAppointmentDate = '';
   private _age: number | null = null;
@@ -45,7 +45,7 @@ export class CambraStateService {
     this._result = result;
   }
 
-  setPatientName(name: string) { this._patientName = name; }
+  setPatientCode(code: string) { this._patientCode = code; }
   setPatientDate(date: string) { this._patientDate = date; }
   setNextAppointmentDate(date: string) { this._nextAppointmentDate = date; }
   setObjectives(text: string) { this._objectives = text; }
@@ -57,7 +57,7 @@ export class CambraStateService {
   get ageGroup(): AgeGroup | null { return this._ageGroup; }
   get age(): number | null { return this._age; }
   get result(): CambraCalculationResult | null { return this._result; }
-  get patientName(): string { return this._patientName; }
+  get patientCode(): string { return this._patientCode; }
   get patientDate(): string { return this._patientDate; }
   get nextAppointmentDate(): string { return this._nextAppointmentDate; }
   get objectives(): string { return this._objectives; }
@@ -106,7 +106,7 @@ export class CambraStateService {
 
     const patientRecord: PatientRecord = {
       id: crypto.randomUUID(),
-      name: this._patientName,
+      code: this._patientCode,
       age: this._age || 0,
       date: this._patientDate,
       ageGroup: this._ageGroup!,
@@ -151,7 +151,7 @@ export class CambraStateService {
     this._ageGroup = null;
     this._age = null;
     this._result = null;
-    this._patientName = '';
+    this._patientCode = '';
     this._patientDate = '';
     this._nextAppointmentDate = '';
     this._objectives = '';

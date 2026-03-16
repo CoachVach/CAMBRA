@@ -227,7 +227,7 @@ export class RiskResult {
   }
 
   async onExportPdf() {
-    const patientName = this.cambraState.patientName.replace(/\s+/g, '_') || 'Paciente';
-    await this.pdfExport.exportToPdf('pdf-report-template', `Reporte_Cambra_${patientName}`);
+    const patientCode = this.cambraState.patientCode.replace(/\s+/g, '_') || 'Paciente';
+    await this.pdfExport.exportToPdf('pdf-report-template', `Reporte_Cambra_${patientCode}`);
   }
 }
