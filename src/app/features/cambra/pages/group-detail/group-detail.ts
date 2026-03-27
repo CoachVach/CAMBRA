@@ -24,7 +24,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
             <p class="app-subtitle">{{ group.name }}</p>
           </div>
           <div class="header-actions">
-            <a href="/docs/SEOP-Cuestionario-Cambra-1-y-2.pdf" download="Cuestionario-CAMBRA-SEOP.pdf" class="header-doc-btn">
+            <a href="/docs/Caries Risk ES.pdf" download="Caries Risk ES.pdf" class="header-doc-btn">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M14 2H6C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2ZM18 20H6V4H13V9H18V20Z" fill="currentColor"/>
               </svg>
