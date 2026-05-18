@@ -296,6 +296,20 @@ type Step = 'patient' | 'questionnaire' | 'results';
             </div>
           </div>
 
+          <div class="pdf-section" *ngIf="pdfResult">
+            <h2 class="pdf-section-title">Recomendaciones</h2>
+            <ul class="pdf-recommendations-list">
+              <li *ngFor="let rec of pdfRecommendations" class="pdf-recommendation-item">
+                <span class="pdf-rec-icon">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span>{{ rec }}</span>
+              </li>
+            </ul>
+          </div>
+
           <div class="pdf-footer">
             <p>Universidad Evangélica de El Salvador · Proyecto de Evaluación de Riesgo</p>
             <p class="pdf-footer-brand">Caries Risk ES</p>
@@ -369,6 +383,49 @@ export class CambraPage {
 
   get pdfAgeGroupIs0to5(): boolean {
     return this.cambraState.ageGroup === 'AGE_0_5';
+  }
+
+  get pdfRecommendations(): string[] {
+    const level = this.riskLevel; // 'bajo' | 'alto' | ''
+    const is0to5 = this.pdfAgeGroupIs0to5;
+    if (level === 'bajo') {
+      return is0to5
+        ? [
+          'Mantener hábitos de higiene oral supervisados por los padres',
+          'Cepillado con pasta fluorada (tamaño lenteja/guisante)',
+          'Consultas dentales periódicas cada 12 meses',
+          'Dieta equilibrada con control de azúcares',
+        ]
+        : [
+          'Mantener rutina de higiene oral diaria',
+          'Cepillado con pasta dental fluorada',
+          'Consultas dentales cada 6-12 meses',
+          'Dieta equilibrada baja en azúcares',
+        ];
+    }
+    if (level === 'alto') {
+      return is0to5
+        ? [
+          'Valorar realización de cultivos bacterianos',
+          'Supervisión intensiva de higiene oral por padres/cuidadores',
+          'Eliminar el uso del biberón nocturno',
+          'Reducir la frecuencia de consumo de azúcares',
+          'Consultas dentales cada 3-6 meses',
+          'Aplicación profesional de flúor',
+          'Reevaluar a los 6 meses',
+        ]
+        : [
+          'Supervisión profesional intensiva',
+          'Tratamientos preventivos adicionales con flúor',
+          'Consultas dentales cada 1-3 meses',
+          'Modificación estricta de la dieta',
+          'Aplicación semestral de barniz de flúor',
+          'Considerar cultivos bacterianos complementarios',
+          'Utilizar la Guía de Práctica Clínica para el tratamiento no invasivo',
+          'Reevaluar a los 6 meses',
+        ];
+    }
+    return [];
   }
 
   get isGroupMode(): boolean {

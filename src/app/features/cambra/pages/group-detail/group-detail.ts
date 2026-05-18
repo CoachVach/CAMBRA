@@ -112,6 +112,11 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
               </div>
             </div>
             <div class="p-actions">
+              <button class="btn-pdf-p" (click)="exportPatientPdf(p)" title="Descargar PDF individual" [class.pdf-loading]="exportingPatientId === p.id">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="currentColor"/>
+                </svg>
+              </button>
               <button class="btn-delete-p" (click)="deletePatient(p.id)" title="Eliminar evaluación">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
@@ -141,6 +146,152 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
         <p>Universidad Evangélica de El Salvador</p>
         <p class="app-footer-brand">Caries Risk ES · Evaluación de Riesgo de Caries</p>
       </footer>
+
+      <!-- Hidden Per-Patient PDF Templates -->
+      <ng-container *ngFor="let p of (group?.patients || [])">
+        <div [id]="'pdf-patient-' + p.id" class="pdf-template" style="display: none;">
+          <div class="pdf-header">
+            <div class="pdf-logo-container">
+              <img src="docs/logo.png" alt="Logo">
+            </div>
+            <div class="pdf-header-text">
+              <h1>Reporte de Riesgo de Caries</h1>
+              <p>Clínica Odontológica · Caries Risk ES</p>
+            </div>
+          </div>
+
+          <div class="pdf-section">
+            <h2 class="pdf-section-title">Información del Paciente</h2>
+            <div class="pdf-info-grid">
+              <div class="pdf-info-item">
+                <span class="pdf-info-label">Código:</span>
+                <span class="pdf-info-value">{{ p.code || 'No indicado' }}</span>
+              </div>
+              <div class="pdf-info-item">
+                <span class="pdf-info-label">Edad:</span>
+                <span class="pdf-info-value">{{ p.age ? p.age + ' años' : 'No indicada' }}</span>
+              </div>
+              <div class="pdf-info-item">
+                <span class="pdf-info-label">Fecha de Evaluación:</span>
+                <span class="pdf-info-value">{{ p.date | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="pdf-info-item" *ngIf="p.nextAppointmentDate">
+                <span class="pdf-info-label">Próximo Control:</span>
+                <span class="pdf-info-value">{{ p.nextAppointmentDate | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="pdf-section">
+            <h2 class="pdf-section-title">Resultado de Evaluación (CAMBRA)</h2>
+            <div class="pdf-result-card">
+              <div class="pdf-risk-badge" [class]="'risk-' + p.result.riskLevel.toLowerCase()">
+                {{ p.result.riskLevel === 'BAJO' ? 'BAJO RIESGO' : 'ALTO RIESGO' }}
+              </div>
+              <div class="pdf-score-details">
+                <p><strong>Puntaje Total:</strong> {{ p.result.totalScore }} puntos</p>
+                <p class="pdf-risk-desc">Esta evaluación se basa en el balance entre indicadores de enfermedad, factores de riesgo y factores protectores.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="pdf-section">
+            <h2 class="pdf-section-title">Desglose de Puntuación</h2>
+            <!-- 0-5 years breakdown -->
+            <ng-container *ngIf="p.ageGroup === 'AGE_0_5'">
+              <div class="pdf-score-breakdown">
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-a">A</span>
+                    <span>Factores de riesgo (Sectores 1, 2, 5)</span>
+                  </div>
+                  <div class="pdf-score-row-hint">2 pts por casilla roja, 1 pt por casilla blanca</div>
+                  <div class="pdf-score-row-value">{{ p.result.scoreA ?? 0 }}</div>
+                </div>
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-b">B</span>
+                    <span>Factores protectores (Sectores 3, 4)</span>
+                  </div>
+                  <div class="pdf-score-row-hint">1 pt por cada factor protector</div>
+                  <div class="pdf-score-row-value">{{ p.result.scoreB ?? 0 }}</div>
+                </div>
+                <div class="pdf-score-total-row">
+                  <span class="pdf-score-total-formula">Total (A &minus; B)</span>
+                  <span class="pdf-score-total-value" [class.pdf-total-alto]="p.result.totalScore >= 6">{{ p.result.totalScore }} puntos</span>
+                </div>
+                <div class="pdf-score-thresholds">
+                  <span>Bajo riesgo: &minus;5 a 5 puntos</span>
+                  <span>Alto riesgo: 6 a 18 puntos</span>
+                </div>
+              </div>
+            </ng-container>
+            <!-- 6+ years breakdown -->
+            <ng-container *ngIf="p.ageGroup !== 'AGE_0_5'">
+              <div class="pdf-score-breakdown">
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-a">A</span>
+                    <span>Indicadores de enfermedad (&times;2)</span>
+                  </div>
+                  <div class="pdf-score-row-hint"></div>
+                  <div class="pdf-score-row-value">{{ p.result.diseaseScore }}</div>
+                </div>
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-b">B</span>
+                    <span>Factores de riesgo (&times;1)</span>
+                  </div>
+                  <div class="pdf-score-row-hint"></div>
+                  <div class="pdf-score-row-value">{{ p.result.riskScore }}</div>
+                </div>
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-c">C</span>
+                    <span>Factores protectores (&minus;1)</span>
+                  </div>
+                  <div class="pdf-score-row-hint"></div>
+                  <div class="pdf-score-row-value">&minus;{{ p.result.protectiveScore }}</div>
+                </div>
+                <div class="pdf-score-total-row">
+                  <span class="pdf-score-total-formula">A&times;2 + B &minus; C</span>
+                  <span class="pdf-score-total-value" [class.pdf-total-alto]="p.result.totalScore >= 5">{{ p.result.totalScore }} puntos</span>
+                </div>
+                <div class="pdf-score-thresholds">
+                  <span>Bajo riesgo: &minus;9 a 4 puntos</span>
+                  <span>Alto riesgo: 5 a 18 puntos</span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="pdf-section" *ngIf="p.objectives">
+            <h2 class="pdf-section-title">Objetivos de Autocuidado</h2>
+            <div class="pdf-objectives">
+              <p>{{ p.objectives }}</p>
+            </div>
+          </div>
+
+          <div class="pdf-section">
+            <h2 class="pdf-section-title">Recomendaciones</h2>
+            <ul class="pdf-recommendations-list">
+              <li *ngFor="let rec of getPatientRecommendations(p)" class="pdf-recommendation-item">
+                <span class="pdf-rec-icon">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span>{{ rec }}</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="pdf-footer">
+            <p>Universidad Evangélica de El Salvador · Proyecto de Evaluación de Riesgo</p>
+            <p class="pdf-footer-brand">Caries Risk ES</p>
+          </div>
+        </div>
+      </ng-container>
 
       <!-- Hidden Template for Group PDF -->
       <div id="group-report-template" class="pdf-template" style="display: none;">
@@ -282,9 +433,58 @@ export class GroupDetail implements OnInit {
     }
   }
 
+  exportingPatientId: string | null = null;
+
   exportGroupPdf() {
     if (!this.group) return;
     this.pdfExport.exportToPdf('group-report-template', `Reporte_Grupal_${this.group.name.replace(/\s+/g, '_')}.pdf`);
+  }
+
+  async exportPatientPdf(p: PatientRecord) {
+    this.exportingPatientId = p.id;
+    const fileName = `Reporte_${p.code.replace(/\s+/g, '_') || 'Paciente'}`;
+    await this.pdfExport.exportToPdf(`pdf-patient-${p.id}`, fileName);
+    this.exportingPatientId = null;
+  }
+
+  getPatientRecommendations(p: PatientRecord): string[] {
+    const isAlto = p.result.riskLevel === 'ALTO';
+    const is0to5 = p.ageGroup === 'AGE_0_5';
+    if (!isAlto) {
+      return is0to5
+        ? [
+          'Mantener hábitos de higiene oral supervisados por los padres',
+          'Cepillado con pasta fluorada (tamaño lenteja/guisante)',
+          'Consultas dentales periódicas cada 12 meses',
+          'Dieta equilibrada con control de azúcares',
+        ]
+        : [
+          'Mantener rutina de higiene oral diaria',
+          'Cepillado con pasta dental fluorada',
+          'Consultas dentales cada 6-12 meses',
+          'Dieta equilibrada baja en azúcares',
+        ];
+    }
+    return is0to5
+      ? [
+        'Valorar realización de cultivos bacterianos',
+        'Supervisión intensiva de higiene oral por padres/cuidadores',
+        'Eliminar el uso del biberón nocturno',
+        'Reducir la frecuencia de consumo de azúcares',
+        'Consultas dentales cada 3-6 meses',
+        'Aplicación profesional de flúor',
+        'Reevaluar a los 6 meses',
+      ]
+      : [
+        'Supervisión profesional intensiva',
+        'Tratamientos preventivos adicionales con flúor',
+        'Consultas dentales cada 1-3 meses',
+        'Modificación estricta de la dieta',
+        'Aplicación semestral de barniz de flúor',
+        'Considerar cultivos bacterianos complementarios',
+        'Utilizar la Guía de Práctica Clínica para el tratamiento no invasivo',
+        'Reevaluar a los 6 meses',
+      ];
   }
 
   exportGroupCsv() {
