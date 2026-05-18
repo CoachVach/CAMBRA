@@ -217,6 +217,78 @@ type Step = 'patient' | 'questionnaire' | 'results';
             </div>
           </div>
 
+          <div class="pdf-section" *ngIf="pdfResult">
+            <h2 class="pdf-section-title">Desglose de Puntuación</h2>
+
+            <!-- 0-5 years breakdown -->
+            <ng-container *ngIf="pdfAgeGroupIs0to5">
+              <div class="pdf-score-breakdown">
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-a">A</span>
+                    <span>Factores de riesgo (Sectores 1, 2, 5)</span>
+                  </div>
+                  <div class="pdf-score-row-hint">2 pts por casilla roja, 1 pt por casilla blanca</div>
+                  <div class="pdf-score-row-value">{{ pdfResult.scoreA ?? 0 }}</div>
+                </div>
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-b">B</span>
+                    <span>Factores protectores (Sectores 3, 4)</span>
+                  </div>
+                  <div class="pdf-score-row-hint">1 pt por cada factor protector</div>
+                  <div class="pdf-score-row-value">{{ pdfResult.scoreB ?? 0 }}</div>
+                </div>
+                <div class="pdf-score-total-row">
+                  <span class="pdf-score-total-formula">Total (A &minus; B)</span>
+                  <span class="pdf-score-total-value" [class.pdf-total-alto]="pdfResult.totalScore >= 6">{{ pdfResult.totalScore }} puntos</span>
+                </div>
+                <div class="pdf-score-thresholds">
+                  <span>Bajo riesgo: &minus;5 a 5 puntos</span>
+                  <span>Alto riesgo: 6 a 18 puntos</span>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- 6+ years breakdown -->
+            <ng-container *ngIf="!pdfAgeGroupIs0to5">
+              <div class="pdf-score-breakdown">
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-a">A</span>
+                    <span>Indicadores de enfermedad (&times;2)</span>
+                  </div>
+                  <div class="pdf-score-row-hint"></div>
+                  <div class="pdf-score-row-value">{{ pdfResult.diseaseScore }}</div>
+                </div>
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-b">B</span>
+                    <span>Factores de riesgo (&times;1)</span>
+                  </div>
+                  <div class="pdf-score-row-hint"></div>
+                  <div class="pdf-score-row-value">{{ pdfResult.riskScore }}</div>
+                </div>
+                <div class="pdf-score-row">
+                  <div class="pdf-score-row-label">
+                    <span class="pdf-score-badge pdf-badge-c">C</span>
+                    <span>Factores protectores (&minus;1)</span>
+                  </div>
+                  <div class="pdf-score-row-hint"></div>
+                  <div class="pdf-score-row-value">&minus;{{ pdfResult.protectiveScore }}</div>
+                </div>
+                <div class="pdf-score-total-row">
+                  <span class="pdf-score-total-formula">A&times;2 + B &minus; C</span>
+                  <span class="pdf-score-total-value" [class.pdf-total-alto]="pdfResult.totalScore >= 5">{{ pdfResult.totalScore }} puntos</span>
+                </div>
+                <div class="pdf-score-thresholds">
+                  <span>Bajo riesgo: &minus;9 a 4 puntos</span>
+                  <span>Alto riesgo: 5 a 18 puntos</span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+
           <div class="pdf-section" *ngIf="objectives">
             <h2 class="pdf-section-title">Objetivos de Autocuidado</h2>
             <div class="pdf-objectives">
@@ -289,6 +361,14 @@ export class CambraPage {
 
   get ageGroup() {
     return this.cambraState.ageGroup;
+  }
+
+  get pdfResult() {
+    return this.cambraState.result;
+  }
+
+  get pdfAgeGroupIs0to5(): boolean {
+    return this.cambraState.ageGroup === 'AGE_0_5';
   }
 
   get isGroupMode(): boolean {

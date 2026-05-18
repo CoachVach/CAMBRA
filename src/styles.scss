@@ -279,7 +279,7 @@ button {
    ────────────────────────────────────────────────────────────────────────── */
 .pdf-template {
     width: 210mm; // A4 Width
-    padding: 25mm 20mm;
+    padding: 14mm 18mm;
     background: white;
     font-family: 'Inter', sans-serif;
     color: #1e293b;
@@ -292,14 +292,14 @@ button {
     .pdf-header {
         display: flex;
         align-items: center;
-        margin-bottom: 15mm;
+        margin-bottom: 7mm;
         border-bottom: 2px solid #eef2f6;
-        padding-bottom: 10mm;
+        padding-bottom: 5mm;
 
         .pdf-logo-container {
-            width: 80px;
-            height: 80px;
-            margin-right: 6mm;
+            width: 56px;
+            height: 56px;
+            margin-right: 5mm;
 
             img {
                 width: 100%;
@@ -312,55 +312,55 @@ button {
             flex: 1;
 
             h1 {
-                font-size: 24pt;
+                font-size: 20pt;
                 font-weight: 900;
-                color: #3a1355; // $purple-dark
-                margin: 0 0 5mm 0;
+                color: #3a1355;
+                margin: 0 0 2mm 0;
             }
 
             p {
                 margin: 0;
                 color: #64748b;
-                font-size: 11pt;
+                font-size: 10pt;
                 font-weight: 500;
             }
         }
     }
 
     .pdf-section {
-        margin-bottom: 12mm;
+        margin-bottom: 6mm;
 
         .pdf-section-title {
-            font-size: 14pt;
+            font-size: 10pt;
             font-weight: 800;
-            color: #743496; // $purple
-            margin-bottom: 6mm;
+            color: #743496;
+            margin-bottom: 3mm;
             text-transform: uppercase;
             letter-spacing: 0.05em;
             border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 2mm;
+            padding-bottom: 1.5mm;
         }
     }
 
     .pdf-info-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 6mm 10mm;
+        gap: 3mm 8mm;
 
         .pdf-info-item {
             display: flex;
             flex-direction: column;
-            gap: 2mm;
+            gap: 1mm;
 
             .pdf-info-label {
-                font-size: 10pt;
+                font-size: 8pt;
                 font-weight: 700;
                 color: #94a3b8;
                 text-transform: uppercase;
             }
 
             .pdf-info-value {
-                font-size: 12pt;
+                font-size: 11pt;
                 font-weight: 600;
                 color: #1e293b;
             }
@@ -370,27 +370,27 @@ button {
     .pdf-result-card {
         background: #fdfbff;
         border: 1px solid #eef2f6;
-        border-radius: 12px;
-        padding: 8mm;
+        border-radius: 10px;
+        padding: 4mm 6mm;
         display: flex;
         align-items: center;
-        gap: 10mm;
+        gap: 6mm;
 
         .pdf-risk-badge {
-            padding: 4mm 8mm;
+            padding: 3mm 6mm;
             border-radius: 8px;
-            font-size: 14pt;
+            font-size: 11pt;
             font-weight: 900;
             text-transform: uppercase;
         }
 
         .pdf-score-details {
             p {
-                margin: 0 0 2mm 0;
-                font-size: 12pt;
+                margin: 0 0 1mm 0;
+                font-size: 11pt;
 
                 &.pdf-risk-desc {
-                    font-size: 10pt;
+                    font-size: 9pt;
                     color: #64748b;
                     font-weight: 500;
                 }
@@ -472,6 +472,105 @@ button {
     .pdf-risk-badge.risk-extremo {
         background: #fee2e2;
         border: 1px solid #fca5a5;
+    }
+
+    .pdf-score-breakdown {
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 3mm;
+
+        .pdf-score-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            row-gap: 1mm;
+            padding: 4mm 6mm;
+            border-bottom: 1px solid #f1f5f9;
+            align-items: center;
+
+            .pdf-score-row-label {
+                display: flex;
+                align-items: center;
+                gap: 3mm;
+                font-size: 11pt;
+                font-weight: 600;
+                color: #1e293b;
+                grid-column: 1;
+            }
+
+            .pdf-score-row-hint {
+                grid-column: 1;
+                font-size: 9pt;
+                color: #94a3b8;
+                font-style: italic;
+                padding-left: 8mm;
+            }
+
+            .pdf-score-row-value {
+                grid-row: 1 / 3;
+                grid-column: 2;
+                font-size: 18pt;
+                font-weight: 800;
+                color: #3a1355;
+                text-align: right;
+                min-width: 10mm;
+            }
+        }
+
+        .pdf-score-total-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f8f4fc;
+            padding: 4mm 6mm;
+            border-bottom: 1px solid #e2e8f0;
+
+            .pdf-score-total-formula {
+                font-size: 10pt;
+                font-weight: 700;
+                color: #64748b;
+            }
+
+            .pdf-score-total-value {
+                font-size: 14pt;
+                font-weight: 900;
+                color: #059669; // low risk by default
+
+                &.pdf-total-alto {
+                    color: #dc2626;
+                }
+            }
+        }
+
+        .pdf-score-thresholds {
+            display: flex;
+            justify-content: space-around;
+            padding: 3mm 6mm;
+            background: #f8fafc;
+
+            span {
+                font-size: 9pt;
+                font-weight: 600;
+                color: #64748b;
+            }
+        }
+    }
+
+    .pdf-score-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 5px;
+        font-size: 9pt;
+        font-weight: 900;
+        color: white;
+        flex-shrink: 0;
+
+        &.pdf-badge-a { background: #dc2626; }
+        &.pdf-badge-b { background: #743496; }
+        &.pdf-badge-c { background: #059669; }
     }
 
     .pdf-objectives {
