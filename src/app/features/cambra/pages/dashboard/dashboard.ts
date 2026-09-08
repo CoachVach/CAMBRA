@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
             </svg>
           </div>
           <div class="header-text">
-            <h1 class="app-title">Caries Risk ES</h1>
+            <h1 class="app-title">CARIES-RISK-ES</h1>
             <p class="app-subtitle">Panel de Control</p>
           </div>
           <div class="header-actions">
@@ -93,7 +93,7 @@ import { FormsModule } from '@angular/forms';
       <footer class="app-footer">
         <img src="docs/logo.png" alt="Logo" class="footer-logo">
         <p>Universidad Evangélica de El Salvador</p>
-        <p class="app-footer-brand">Caries Risk ES · Evaluación de Riesgo de Caries</p>
+        <p class="app-footer-brand">CARIES-RISK-ES · Evaluación de Riesgo de Caries</p>
       </footer>
 
       <!-- Create Group Modal -->

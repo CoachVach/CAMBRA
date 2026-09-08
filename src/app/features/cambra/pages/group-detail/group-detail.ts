@@ -20,7 +20,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
             </button>
           </div>
           <div class="header-text">
-            <h1 class="app-title">Caries Risk ES</h1>
+            <h1 class="app-title">CARIES-RISK-ES</h1>
             <p class="app-subtitle">{{ group.name }}</p>
           </div>
           <div class="header-actions">
@@ -144,7 +144,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
       <footer class="app-footer">
         <img src="docs/logo.png" alt="Logo" class="footer-logo">
         <p>Universidad Evangélica de El Salvador</p>
-        <p class="app-footer-brand">Caries Risk ES · Evaluación de Riesgo de Caries</p>
+        <p class="app-footer-brand">CARIES-RISK-ES · Evaluación de Riesgo de Caries</p>
       </footer>
 
       <!-- Hidden Per-Patient PDF Templates -->
@@ -156,7 +156,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
             </div>
             <div class="pdf-header-text">
               <h1>Reporte de Riesgo de Caries</h1>
-              <p>Clínica Odontológica · Caries Risk ES</p>
+              <p>Clínica Odontológica · CARIES-RISK-ES</p>
             </div>
           </div>
 
@@ -288,7 +288,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
 
           <div class="pdf-footer">
             <p>Universidad Evangélica de El Salvador · Proyecto de Evaluación de Riesgo</p>
-            <p class="pdf-footer-brand">Caries Risk ES</p>
+            <p class="pdf-footer-brand">CARIES-RISK-ES</p>
           </div>
         </div>
       </ng-container>
@@ -301,7 +301,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
           </div>
           <div class="pdf-header-text">
             <h1>Reporte Grupal de Riesgo</h1>
-            <p>Clínica Odontológica · Caries Risk ES</p>
+            <p>Clínica Odontológica · CARIES-RISK-ES</p>
           </div>
         </div>
 
@@ -357,7 +357,7 @@ import { PdfExportService } from '../../../../core/services/pdf-export.service';
 
         <div class="pdf-footer">
           <p>Universidad Evangélica de El Salvador · Proyecto de Evaluación de Riesgo</p>
-          <p class="pdf-footer-brand">Caries Risk ES</p>
+          <p class="pdf-footer-brand">CARIES-RISK-ES</p>
         </div>
       </div>
     </div>
